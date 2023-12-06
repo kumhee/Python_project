@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block main_area %}
+<div>
+    <h1 class="text-center mb-5"> 이름검색 </h1>
+    <form name="frm" class="col-4 mb-3">
+        <div class="input-group">
+            <input name="query" class="form-control" placeholder="이름">
+            <button class="btn btn-dark">검색</button>
+        </div>
+    </form>
+    <div id="div_list"></div>
+</div>
+
+{% raw %}
+<script id="temp_list" type="x-handlebars-template" >
+    <table class="table">
+        <thead>
+            <tr>
+                <th>이름</th>
+                <th>학교</th>
+                <th>키</th>
+                <th>SW특기</th>
+                <th>국어</th>
+                <th>영어</th>
+                <th>수학</th>
+                <th>과학</th>
+                <th>사회</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each .}}
+            <tr>
+                <td>{{이름}}</td>
+                <td>{{학교}}</td>
+                <td>{{키}}</td>
+                <td>{{SW특기}}</td>
+                <td>{{국어}}</td>
+                <td>{{영어}}</td>
+                <td>{{수학}}</td>
+                <td>{{과학}}</td>
+                <td>{{사회}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</script>
+{% endraw %}
+
+<script>
+    getList();
+    $(frm).on("submit", function (e) {
+        e.preventDefault();
+        getList();
+    });
+
+    function getList() {
+        $.ajax({
+            type: "get",
+            url: "/score/list.json",
+            data: { query: $(frm.query).val() },
+            dataType: "json",
+            success: function (data) {
+                const temp = Handlebars.compile($("#temp_list").html());
+                $("#div_list").html(temp(data));
+            },
+        });
+    }
+</script>
+{% endblock %}
