@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block main_area %}
+<div class="my-5">
+    <h1 class="text-center mb-5">다항회귀</h1>
+
+    <div class="page_wrap">
+        <div>
+            <form class="card p-5" name="frm">
+                <div class="input-group">
+                    <span class="input-group-text"> Degree </span>
+                    <select class="form-select" name="degree">
+                        <option value="1">1차원</option>
+                        <option value="2">2차원</option>
+                        <option value="3">3차원</option>
+                        <option value="4">4차원</option>
+                        <option value="5">5차원</option>
+                        <option value="6">6차원</option>
+                        <option value="7">7차원</option>
+                        <option value="8">8차원</option>
+                        <option value="9">9차원</option>
+                        <option value="10">10차원</option>
+                    </select>
+                    <button class="btn btn-dark" type="button" id="btn_graph"> 그래프출력 </button>
+                </div>
+
+                <div class="mt-3">
+                    <form name="frm1">
+                        <div class="input-group">
+                            <input class="form-control" placeholder="공부시간" name="hour"> 
+                            <button class="btn btn-dark" type="submit">예상점수</button>
+                        </div>
+                    </form>
+                </div>
+            </form>
+
+            <div class="text-center my-5">
+                <h3>예상 점수는 <span id="score" style="color: red;">0</span>점 입니다.</h3>
+            </div>
+        </div>
+
+        <div>
+            <img src="http://via.placeholder.com/200x100" width="100%" id="graph">
+        </div>
+    </div><!--page_wrap-->
+</div>
+
+<script>
+    $("#btn_graph").on("click", function(e) {
+        e.preventDefault();
+        $("#graph").attr("src", "/score/poly/graph?degree=" + $(frm.degree).val());
+    })
+
+    $(frm).on("submit", function(e) {
+        e.preventDefault();
+        const hour = $(frm.hour).val();
+        if (hour == "") {
+            alert("공부시간을 입력하세요.");
+        } else {
+            $.ajax({
+                type: "get",
+                url: "/score/poly",
+                data: {hour, degree:$(frm.degree).val()},
+                success: function(data) {
+                    $("#score").html(parseInt(data)); 
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
